@@ -1,0 +1,32 @@
+# IDE
+.idea
+.vscode
+/.DS_Store
+# Config
+.env
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+*.html
+*.http
+
+# Dependency directories (remove the comment below to include it)
+vendor/
+
+# Deeploy
+/deploy/InitDatabase
+/deploy/pgdata
+/deploy/redis
+/deploy/mongo
+/upload
