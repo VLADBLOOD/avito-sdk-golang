@@ -17,35 +17,48 @@ import (
 // Такой подход позволяет типобезопасно работать с ответами без лишних приведений типов.
 //
 // Пример:
-//   var resp model.AdsInfoResponse
-//   status, err := client.request(ctx, http.MethodGet, "/core/v1/items", nil, &resp)
-//   if err != nil { ... }
-//   _ = status
+//
+//	var resp model.AdsInfoResponse
+//	status, err := client.request(ctx, http.MethodGet, "/core/v1/items", nil, &resp)
+//	if err != nil { ... }
+//	_ = status
 //
 //goland:noinspection GoNameStartsWithPackageName
- type IHttpClient interface {
+type IHttpClient interface {
 	request(ctx context.Context, method string, path string, body io.Reader, out any) (int, error)
 }
 
 // HttpClient - реализация IHttpClient на базе стандартного http.Client.
- type HttpClient struct {
+type HTTPClient struct {
 	client *http.Client
 	token  *Token
+	creds  *Credentials
 }
 
 // NewHttpClient - конструктор HTTP-клиента с установленным таймаутом и токеном авторизации.
- func NewHttpClient(token *Token) *HttpClient {
-	return &HttpClient{
+func NewHTTPClient(token *Token, creds *Credentials) *HTTPClient {
+	return &HTTPClient{
 		client: &http.Client{
 			Timeout: _defaultTimeoutHTTP,
 		},
 		token: token,
+		creds: creds,
 	}
 }
 
 // request - выполняет HTTP-запрос к Avito API по относительному пути.
 // Добавляет заголовок авторизации и, при необходимости, декодирует JSON-ответ в out.
- func (h *HttpClient) request(ctx context.Context, method string, path string, body io.Reader, out any) (int, error) {
+func (h *HTTPClient) request(ctx context.Context, method, path string, body io.Reader, out any) (int, error) {
+	// Проверка токена перед запросом
+	if h.token.IsExpired() {
+		newToken, err := GetToken(h.creds)
+		if err != nil {
+			return 0, fmt.Errorf("failed to refresh token: %w", err)
+		}
+
+		h.token = newToken
+	}
+
 	fullURL := fmt.Sprintf("%s%s", baseURL, path)
 
 	req, err := http.NewRequestWithContext(ctx, method, fullURL, body)

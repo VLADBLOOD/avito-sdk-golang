@@ -14,22 +14,20 @@ import (
 
 // ADS - сервис работы с объявлениями Avito.
 // Выполняет запросы для получения информации об объявлениях и их статистики.
- type ADS struct {
-	client   IHttpClient
-	clientID string
+type ADS struct {
+	client IHttpClient
 }
 
 // NewADS - конструктор сервиса объявлений.
- func NewADS(clientID string, client IHttpClient) *ADS {
+func NewADS(client IHttpClient) *ADS {
 	return &ADS{
-		client:   client,
-		clientID: clientID,
+		client: client,
 	}
 }
 
 // GetAdsInfo - получение информации по объявлениям с возможностью фильтрации.
 // Возвращает структуру AdsInfoResponse или ошибку.
- func (a *ADS) GetAdsInfo(ctx context.Context, request *model.AdsInfoRequest) (*model.AdsInfoResponse, error) {
+func (a *ADS) GetAdsInfo(ctx context.Context, request *model.AdsInfoRequest) (*model.AdsInfoResponse, error) {
 	path := "/core/v1/items"
 	response := new(model.AdsInfoResponse)
 
@@ -59,8 +57,8 @@ import (
 
 // GetAdsStats - получение статистики по объявлениям за период.
 // Возвращает структуру AdsStatsResponse или ошибку.
- func (a *ADS) GetAdsStats(ctx context.Context, request *model.AdsStatsRequest) (*model.AdsStatsResponse, error) {
-	path := fmt.Sprintf("/stats/v1/accounts/%s/items", a.clientID)
+func (a *ADS) GetAdsStats(ctx context.Context, accountID int64, request *model.AdsStatsRequest) (*model.AdsStatsResponse, error) {
+	path := fmt.Sprintf("/stats/v1/accounts/%d/items", accountID)
 	response := new(model.AdsStatsResponse)
 
 	var bodyReader io.Reader
