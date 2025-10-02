@@ -1,13 +1,14 @@
 package api
 
 import (
-	"avito-sdk/model"
 	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
 // ADS - сервис работы с объявлениями Avito.
