@@ -1,11 +1,11 @@
-package main
+package client
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/VLADBLOOD/avito-sdk-golang/api"
-	"github.com/VLADBLOOD/avito-sdk-golang/model"
+	"avito-sdk-golang/api"
+	"avito-sdk-golang/model"
 )
 
 // IAdvertising - интерфейс сервиса объявлений.
