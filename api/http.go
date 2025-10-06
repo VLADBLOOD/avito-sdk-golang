@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
 // IHttpClient - интерфейс HTTP-клиента для выполнения запросов к Avito API.
@@ -32,11 +34,11 @@ type IHttpClient interface {
 type HTTPClient struct {
 	client *http.Client
 	token  *Token
-	creds  *Credentials
+	creds  *model.Credentials
 }
 
 // NewHttpClient - конструктор HTTP-клиента с установленным таймаутом и токеном авторизации.
-func NewHTTPClient(token *Token, creds *Credentials) *HTTPClient {
+func NewHTTPClient(token *Token, creds *model.Credentials) *HTTPClient {
 	return &HTTPClient{
 		client: &http.Client{
 			Timeout: _defaultTimeoutHTTP,

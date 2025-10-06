@@ -55,7 +55,7 @@ type Client struct {
 
 // NewClient - конструктор клиента SDK.
 // Получает токен по Client Credentials и создает HTTP-клиент для дальнейших запросов.
-func NewClient(creds *api.Credentials) (*Client, error) {
+func NewClient(creds *model.Credentials) (*Client, error) {
 	if creds == nil || creds.ClientID == "" || creds.ClientSecret == "" {
 		return nil, fmt.Errorf("invalid creds: clientID and clientSecret are required")
 	}

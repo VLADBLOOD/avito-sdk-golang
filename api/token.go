@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
 // Token - структура токена доступа OAuth2 для Avito API.
@@ -18,13 +20,8 @@ type Token struct {
 	ExpiresAt   time.Time `json:"-"` // Время истечения срока действия токена. Не сериализуется в JSON.
 }
 
-type Credentials struct {
-	ClientID     string // Идентификатор клиента
-	ClientSecret string // Секрет клиента для получения токена
-}
-
 // GetToken - выполняет Client Credentials OAuth2-флоу и возвращает токен доступа.
-func GetToken(creds *Credentials) (token *Token, err error) {
+func GetToken(creds *model.Credentials) (token *Token, err error) {
 	ctx := context.Background()
 
 	data := url.Values{}
