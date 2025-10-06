@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"avito-sdk-golang/model"
+	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
 // ADS - сервис работы с объявлениями Avito.

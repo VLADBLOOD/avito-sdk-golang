@@ -1,4 +1,4 @@
-module avito-sdk-golang
+module github.com/VLADBLOOD/avito-sdk-golang
 
 go 1.24.2
 

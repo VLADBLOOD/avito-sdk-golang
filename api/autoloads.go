@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"avito-sdk-golang/model"
+	"github.com/VLADBLOOD/avito-sdk-golang/model"
 
 	"github.com/google/go-querystring/query"
 )

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"avito-sdk-golang/api"
-	"avito-sdk-golang/model"
+	"github.com/VLADBLOOD/avito-sdk-golang/api"
+	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
 // IAdvertising - интерфейс сервиса объявлений.
