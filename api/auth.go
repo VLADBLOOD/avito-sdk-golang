@@ -12,38 +12,31 @@ import (
 	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
-// Token - структура токена доступа OAuth2 для Avito API.
-type Token struct {
-	AccessToken string    `json:"access_token"`
-	TokenType   string    `json:"token_type"`
-	ExpiresIn   int       `json:"expires_in"`
-	ExpiresAt   time.Time `json:"-"` // Время истечения срока действия токена. Не сериализуется в JSON.
-}
-
-func (t *Token) IsFresh() bool {
-	if t == nil {
+func (a *Authorization) isTokenFresh() bool {
+	if a.token == nil {
 		return false
 	}
-	return time.Now().Before(t.ExpiresAt)
+	return time.Now().Before(a.token.ExpiresAt)
 }
 
-func (t *Token) IsExpired() bool {
-	if t == nil {
+func (a *Authorization) isTokenExpired() bool {
+	if a.token == nil {
 		return false
 	}
-	return !t.IsFresh()
+	return !a.isTokenFresh()
 }
 
 type IAuthorization interface {
 	// Возвращает токен для конкретных Credentials
-	GetToken() (*Token, error)
+	GetToken() (*model.Token, error)
 	SetCredentials(creds *model.Credentials) error
+	fetchToken() error
 }
 
 // Authorization управляет авторизацией в Avito API через OAuth2 client_credentials.
 type Authorization struct {
 	creds *model.Credentials
-	token *Token
+	token *model.Token
 }
 
 // NewHttpClient - конструктор HTTP-клиента с установленным таймаутом и токеном авторизации.
@@ -67,13 +60,13 @@ func (a *Authorization) SetCredentials(creds *model.Credentials) error {
 }
 
 // Возвращает значение своего атрибута token
-func (a *Authorization) GetToken() (*Token, error) {
+func (a *Authorization) GetToken() (*model.Token, error) {
 	if a.creds == nil {
 		return nil, fmt.Errorf("CREDENTIALS IS NOT INITIALIZED")
 	}
 
 	// Проверка актуальности токена перед передачей
-	if a.token.IsExpired() {
+	if a.isTokenExpired() {
 		err := a.fetchToken()
 		if err != nil {
 			return nil, fmt.Errorf("failed to refresh token: %w", err)
@@ -123,7 +116,7 @@ func (a *Authorization) fetchToken() error {
 		return err
 	}
 
-	var t Token
+	var t model.Token
 	if decErr := json.NewDecoder(resp.Body).Decode(&t); decErr != nil {
 		err = fmt.Errorf("could not decode response: %w", decErr)
 		return err

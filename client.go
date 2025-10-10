@@ -44,12 +44,19 @@ type IMessenger interface {
 	) (*model.ChatMessagesListV3Response, error)
 }
 
+type IAuthorization interface {
+	// Возвращает токен для конкретных Credentials
+	GetToken() (*model.Token, error)
+	SetCredentials(creds *model.Credentials) error
+}
+
 // Client - основной клиент SDK, агрегирует сервисы Avito API.
 type Client struct {
-	ADS          IAdvertising  // Сервис объявлений
-	Autoloads    IAutoloads    // Сервис автозагрузок
-	CallTracking ICallTracking // Сервис звонков
-	Messenger    IMessenger    // Сервис чатов
+	Auth         IAuthorization // Сервис авторизации
+	ADS          IAdvertising   // Сервис объявлений
+	Autoloads    IAutoloads     // Сервис автозагрузок
+	CallTracking ICallTracking  // Сервис звонков
+	Messenger    IMessenger     // Сервис чатов
 }
 
 // NewClient - конструктор клиента SDK.
@@ -58,6 +65,7 @@ func NewClient(creds *model.Credentials) (*Client, error) {
 	auth := api.NewAuthorization()
 	http := api.NewHTTPClient(auth)
 	return &Client{
+		Auth:         auth,
 		ADS:          api.NewADS(http),
 		Autoloads:    api.NewAutoloads(http),
 		CallTracking: api.NewCallTracking(http),
