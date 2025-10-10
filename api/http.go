@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/VLADBLOOD/avito-sdk-golang/model"
 )
 
 // IHttpClient - интерфейс HTTP-клиента для выполнения запросов к Avito API.
@@ -33,32 +31,25 @@ type IHttpClient interface {
 // HttpClient - реализация IHttpClient на базе стандартного http.Client.
 type HTTPClient struct {
 	client *http.Client
-	token  *Token
-	creds  *model.Credentials
+	auth   IAuthorization
 }
 
 // NewHttpClient - конструктор HTTP-клиента с установленным таймаутом и токеном авторизации.
-func NewHTTPClient(token *Token, creds *model.Credentials) *HTTPClient {
+func NewHTTPClient(auth IAuthorization) *HTTPClient {
 	return &HTTPClient{
 		client: &http.Client{
 			Timeout: _defaultTimeoutHTTP,
 		},
-		token: token,
-		creds: creds,
+		auth: auth,
 	}
 }
 
 // request - выполняет HTTP-запрос к Avito API по относительному пути.
 // Добавляет заголовок авторизации и, при необходимости, декодирует JSON-ответ в out.
 func (h *HTTPClient) request(ctx context.Context, method, path string, body io.Reader, out any) (int, error) {
-	// Проверка токена перед запросом
-	if h.token.IsExpired() {
-		newToken, err := GetToken(h.creds)
-		if err != nil {
-			return 0, fmt.Errorf("failed to refresh token: %w", err)
-		}
-
-		h.token = newToken
+	token, err := h.auth.GetToken()
+	if err != nil {
+		return 0, fmt.Errorf("error at getting token: %w", err)
 	}
 
 	fullURL := fmt.Sprintf("%s%s", baseURL, path)
@@ -67,7 +58,7 @@ func (h *HTTPClient) request(ctx context.Context, method, path string, body io.R
 	if err != nil {
 		return 0, fmt.Errorf("http.NewRequestWithContext: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+h.token.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+token.AccessToken)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
 

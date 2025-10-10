@@ -2,7 +2,6 @@ package client
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/VLADBLOOD/avito-sdk-golang/api"
 	"github.com/VLADBLOOD/avito-sdk-golang/model"
@@ -56,17 +55,8 @@ type Client struct {
 // NewClient - конструктор клиента SDK.
 // Получает токен по Client Credentials и создает HTTP-клиент для дальнейших запросов.
 func NewClient(creds *model.Credentials) (*Client, error) {
-	if creds == nil || creds.ClientID == "" || creds.ClientSecret == "" {
-		return nil, fmt.Errorf("invalid creds: clientID and clientSecret are required")
-	}
-
-	token, err := api.GetToken(creds)
-	if err != nil {
-		return nil, fmt.Errorf("could not get token: %w", err)
-	}
-
-	http := api.NewHTTPClient(token, creds)
-
+	auth := api.NewAuthorization()
+	http := api.NewHTTPClient(auth)
 	return &Client{
 		ADS:          api.NewADS(http),
 		Autoloads:    api.NewAutoloads(http),
