@@ -61,7 +61,7 @@ type Client struct {
 
 // NewClient - конструктор клиента SDK.
 // Получает токен по Client Credentials и создает HTTP-клиент для дальнейших запросов.
-func NewClient(creds *model.Credentials) (*Client, error) {
+func NewClient() (*Client, error) {
 	auth := api.NewAuthorization()
 	http := api.NewHTTPClient(auth)
 	return &Client{
