@@ -68,6 +68,10 @@ func (h *HTTPClient) request(ctx context.Context, method, path string, body io.R
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode != http.StatusOK {
+		return resp.StatusCode, nil
+	}
+
 	if out != nil {
 		if err := json.NewDecoder(resp.Body).Decode(out); err != nil {
 			return resp.StatusCode, fmt.Errorf("decode response: %w", err)
