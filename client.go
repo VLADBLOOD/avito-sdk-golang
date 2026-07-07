@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 type IAdvertising interface {
 	GetAdsInfo(ctx context.Context, request *model.AdsInfoRequest) (*model.AdsInfoResponse, error)
 	GetAdsStats(ctx context.Context, accountID int64, request *model.AdsStatsRequest) (*model.AdsStatsResponse, error)
+	GetAccountSpendings(ctx context.Context, accountID int64, request *model.AccountSpendingsRequest) (*model.AccountSpendingsResponse, error)
 }
 
 // IAutoloads - интерфейс сервиса автозагрузок.
@@ -44,6 +45,10 @@ type IMessenger interface {
 	) (*model.ChatMessagesListV3Response, error)
 }
 
+type IUser interface {
+	GetUserInfoSelf(ctx context.Context) (*model.UserInfoResponse, error)
+}
+
 type IAuthorization interface {
 	// Возвращает токен для конкретных Credentials
 	GetToken() (*model.Token, error)
@@ -57,6 +62,7 @@ type Client struct {
 	Autoloads    IAutoloads     // Сервис автозагрузок
 	CallTracking ICallTracking  // Сервис звонков
 	Messenger    IMessenger     // Сервис чатов
+	User         IUser          // Сервис информации о пользователе
 }
 
 // NewClient - конструктор клиента SDK.
@@ -70,5 +76,6 @@ func NewClient() (*Client, error) {
 		Autoloads:    api.NewAutoloads(http),
 		CallTracking: api.NewCallTracking(http),
 		Messenger:    api.NewMessenger(http),
+		User:         api.NewUser(http),
 	}, nil
 }

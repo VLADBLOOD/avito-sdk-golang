@@ -40,8 +40,6 @@ func (a *Autoloads) GetAutoloadsListV2(
 		}
 	}
 
-	fmt.Print(path)
-
 	status, err := a.client.request(ctx, http.MethodGet, path, io.Reader(nil), response)
 	if err != nil {
 		return response, fmt.Errorf("get autoloads list: запрос завершился ошибкой: %w", err)
