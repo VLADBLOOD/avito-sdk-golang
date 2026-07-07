@@ -84,3 +84,30 @@ func (a *ADS) GetAdsStats(ctx context.Context, accountID int64, request *model.A
 
 	return response, nil
 }
+
+// GetAccountSpendings - получение статистики расходов профиля.
+func (a *ADS) GetAccountSpendings(ctx context.Context, accountID int64, request *model.AccountSpendingsRequest) (*model.AccountSpendingsResponse, error) {
+	path := fmt.Sprintf("/stats/v2/accounts/%d/spendings", accountID)
+	response := new(model.AccountSpendingsResponse)
+
+	var bodyReader io.Reader
+
+	if request != nil {
+		jsonBody, err := json.Marshal(request)
+		if err != nil {
+			return nil, fmt.Errorf("get account spendings: не удалось сериализовать тело запроса: %w", err)
+		}
+		bodyReader = bytes.NewReader(jsonBody)
+	}
+
+	status, err := a.client.request(ctx, http.MethodPost, path, bodyReader, response)
+	if err != nil {
+		return response, fmt.Errorf("get account spendings: запрос завершился ошибкой: %w", err)
+	}
+
+	if status != http.StatusOK {
+		return response, fmt.Errorf("get account spendings: сервер вернул код %d", status)
+	}
+
+	return response, nil
+}

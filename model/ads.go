@@ -45,6 +45,41 @@ type AdsStatsResponse struct {
 	Result AdStatsResult `json:"result"`
 }
 
+// AccountSpendingsRequest - фильтр запроса статистики расходов профиля.
+type AccountSpendingsRequest struct {
+	DateFrom      string                  `json:"dateFrom"`
+	DateTo        string                  `json:"dateTo"`
+	Grouping      string                  `json:"grouping"`
+	SpendingTypes []string                `json:"spendingTypes"`
+	Filter        *AccountSpendingsFilter `json:"filter,omitempty"`
+}
+
+// AccountSpendingsFilter - опциональная фильтрация.
+type AccountSpendingsFilter struct {
+	CategoryIDs []int64 `json:"categoryIDs,omitempty"`
+	ItemIDs     []int64 `json:"itemIDs,omitempty"`
+	LocationIDs []int64 `json:"locationIDs,omitempty"`
+}
+
+// AccountSpendingsResponse - ответ API со статистикой расходов профиля.
+type AccountSpendingsResponse struct {
+	Result struct {
+		Groupings []struct {
+			Date      string `json:"date"`
+			Type      string `json:"type"`
+			Spendings []struct {
+				Slug     string `json:"type"`
+				Value    int64  `json:"value"`
+				Services []struct {
+					Slug  string `json:"slug"`
+					Value int64  `json:"value"`
+				} `json:"services,omitempty"`
+			} `json:"spendings,omitempty"`
+		} `json:"groupings"`
+		Timestamp int64 `json:"timestamp"`
+	} `json:"result"`
+}
+
 // AdStatsResult - результат статистики
 type AdStatsResult struct {
 	Items []AdStatsItem `json:"items"`
