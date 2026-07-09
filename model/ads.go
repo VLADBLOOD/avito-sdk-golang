@@ -71,8 +71,8 @@ type AccountSpendingsResponse struct {
 				Slug     string `json:"slug"`
 				Value    int64  `json:"value"`
 				Services []struct {
-					Slug  string `json:"slug"`
-					Value int64  `json:"value"`
+					Slug  string  `json:"slug"`
+					Value float64 `json:"value"`
 				} `json:"services,omitempty"`
 			} `json:"spendings,omitempty"`
 		} `json:"groupings"`
