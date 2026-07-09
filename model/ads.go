@@ -69,7 +69,7 @@ type AccountSpendingsResponse struct {
 			Type      string `json:"type"`
 			Spendings []struct {
 				Slug     string `json:"slug"`
-				Value    int64  `json:"value"`
+				Value    float64  `json:"value"`
 				Services []struct {
 					Slug  string  `json:"slug"`
 					Value float64 `json:"value"`
